@@ -17,10 +17,15 @@ type led struct {
 	brightness *os.File
 
 	initialized bool
+	path        string
 }
 
 func NewLED(id string) embd.LED {
 	return &led{id: id}
+}
+
+func NewLEDWithPath(id, path string) embd.LED {
+	return &led{id: id, path: path}
 }
 
 func (l *led) init() error {
@@ -39,6 +44,9 @@ func (l *led) init() error {
 }
 
 func (l *led) brightnessFilePath() string {
+	if l.path != "" {
+		return l.path
+	}
 	return fmt.Sprintf("/sys/class/leds/%v/brightness", l.id)
 }
 
