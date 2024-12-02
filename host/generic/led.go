@@ -4,7 +4,7 @@ package generic
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"strings"
 
@@ -78,7 +78,8 @@ func (l *led) Off() error {
 
 func (l *led) isOn() (bool, error) {
 	l.brightness.Seek(0, 0)
-	bytes, err := ioutil.ReadAll(l.brightness)
+	bytes := make([]byte, 1)
+	_, err := io.ReadAtLeast(l.brightness, bytes, 1)
 	if err != nil {
 		return false, err
 	}
